@@ -1,41 +1,33 @@
 'use client';
-import { useEffect, useState, useRef } from 'react';
-import mapboxgl from 'mapbox-gl';
-import MapboxLanguage from '@mapbox/mapbox-gl-language';
+
+import { useState, useRef } from 'react';
+
+import Map, { NavigationControl, GeolocateControl } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-export default function SimpleMap() {
-	mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN ?? '';
-	const mapContainer = useRef(null);
-	const [map, setMap] = useState(null);
+import classes from '@/app/Page.module.css';
 
-	useEffect(() => {
-		const initializeMap = ({
-			setMap,
-			mapContainer,
-		}: {
-			setMap: any;
-			mapContainer: any;
-		}) => {
-			const map = new mapboxgl.Map({
-				container: mapContainer.current,
-				center: [-123.11934, 49.24966], // Render Vancouver as the initial point(specify lng and lat)
-				zoom: 11,
-				style: 'mapbox://styles/kaikoide/clw70yrjl028m01rj86ct7a7k',
-			});
-
-			map.on('load', () => {
-				setMap(map);
-				map.resize();
-			});
-		};
-
-		if (!map) initializeMap({ setMap, mapContainer });
-	}, [map]);
+export default function Home() {
+	const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 
 	return (
-		<>
-			<div ref={mapContainer} style={{ width: '100%', height: '100vh' }} />
-		</>
+		<main className={classes.mainStyle}>
+			<Map
+				mapboxAccessToken={mapboxToken}
+				mapStyle='mapbox://styles/kaikoide/clw70yrjl028m01rj86ct7a7k'
+				style={classes.mapStyle}
+				initialViewState={{
+					latitude: 49.24966,
+					longitude: -123.11934,
+					zoom: 11,
+				}}
+				maxZoom={20}
+				minZoom={3}
+			>
+				{/* Current location */}
+				<GeolocateControl position='top-left' />
+				<NavigationControl position='top-left' />
+			</Map>
+		</main>
 	);
 }
