@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, type MouseEvent } from 'react';
 
 import Map, {
 	Marker,
 	Popup,
 	NavigationControl,
 	GeolocateControl,
+	type MapRef,
 } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { MapPin } from 'lucide-react';
@@ -15,11 +16,20 @@ import classes from '@/app/Page.module.css';
 import { fetchFoodProgramsData } from '@/libs/api';
 import type FoodProgramsData from '@/types/foodProgramsData';
 
+interface SelectedMarker {
+	foodProgram: FoodProgramsData;
+	index: number;
+}
+
 export default function Home() {
 	const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
-	const [selectedMarker, setSelectedMarker] = useState(null);
-	const [foodProgramsData, setFoodProgramsData] = useState([]);
-	const mapRef = useRef(null);
+	const [selectedMarker, setSelectedMarker] = useState<SelectedMarker | null>(
+		null,
+	);
+	const [foodProgramsData, setFoodProgramsData] = useState<FoodProgramsData[]>(
+		[],
+	);
+	const mapRef = useRef<MapRef | null>(null);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -36,11 +46,19 @@ export default function Home() {
 
 	console.log('foodProgramsData', foodProgramsData);
 
-	const zoomToSelectedLoc = (e, airport, index) => {
-		// stop event bubble-up which triggers unnecessary events
+	const zoomToSelectedLoc = (
+		e: MouseEvent<HTMLButtonElement>,
+		foodProgram: FoodProgramsData,
+		index: number,
+	) => {
 		e.stopPropagation();
-		setSelectedMarker({ airport, index });
-		mapRef.current.flyTo({ center: [airport.lon, airport.lat], zoom: 10 });
+		setSelectedMarker({ foodProgram, index });
+		if (mapRef.current) {
+			mapRef.current.flyTo({
+				center: [foodProgram.longitude, foodProgram.latitude],
+				zoom: 15,
+			});
+		}
 	};
 
 	return (
@@ -61,17 +79,17 @@ export default function Home() {
 				{/* Current location */}
 				<GeolocateControl position='top-left' />
 				<NavigationControl position='top-left' />
-				{foodProgramsData.map((airport, index) => {
+				{foodProgramsData.map((foodProgram, index) => {
 					return (
 						<Marker
 							key={index}
-							longitude={airport.longitude}
-							latitude={airport.latitude}
+							longitude={foodProgram.longitude}
+							latitude={foodProgram.latitude}
 						>
 							<button
 								type='button'
 								className='cursor-pointer'
-								onClick={(e) => zoomToSelectedLoc(e, airport, index)}
+								onClick={(e) => zoomToSelectedLoc(e, foodProgram, index)}
 							>
 								{<MapPin size={30} color='tomato' />}
 							</button>
