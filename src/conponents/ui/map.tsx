@@ -11,6 +11,7 @@ import Map, {
 } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { MapPin } from 'lucide-react';
+import { Bookmark } from 'lucide-react';
 
 import classes from '@/app/Page.module.css';
 import { fetchFoodProgramsData } from '@/libs/api';
@@ -56,7 +57,7 @@ export default function Home() {
 		if (mapRef.current) {
 			mapRef.current.flyTo({
 				center: [foodProgram.longitude, foodProgram.latitude],
-				zoom: 15,
+				zoom: 13,
 			});
 		}
 	};
@@ -79,6 +80,7 @@ export default function Home() {
 				{/* Current location */}
 				<GeolocateControl position='top-left' />
 				<NavigationControl position='top-left' />
+				{/* FoodPrograms Markers */}
 				{foodProgramsData.map((foodProgram, index) => {
 					return (
 						<Marker
@@ -96,6 +98,33 @@ export default function Home() {
 						</Marker>
 					);
 				})}
+				{selectedMarker ? (
+					<Popup
+						offset={25}
+						latitude={selectedMarker.foodProgram.latitude}
+						longitude={selectedMarker.foodProgram.longitude}
+						onClose={() => {
+							setSelectedMarker(null);
+						}}
+						closeButton={false}
+					>
+						{/* <Bookmark /> */}
+						<h3 className={classes.popupTitle}>
+							{selectedMarker.foodProgram.program_name}
+						</h3>
+						<div className={classes.popupInfo}>
+							<label className={classes.popupLabel}>Description: </label>
+							<span>{selectedMarker.foodProgram.description}</span>
+							<br />
+							<label className={classes.popupLabel}>Address: </label>
+							<span>{selectedMarker.foodProgram.location_address}</span>
+							<br />
+							<button type='button' className='btn btn-primary'>
+								Direction
+							</button>
+						</div>
+					</Popup>
+				) : null}
 			</Map>
 		</main>
 	);
