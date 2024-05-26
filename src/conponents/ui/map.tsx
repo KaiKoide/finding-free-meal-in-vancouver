@@ -7,6 +7,8 @@ import Map, {
 	Popup,
 	NavigationControl,
 	GeolocateControl,
+	Source,
+	Layer,
 	type MapRef,
 } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -30,6 +32,8 @@ export default function Home() {
 	const [foodProgramsData, setFoodProgramsData] = useState<FoodProgramsData[]>(
 		[],
 	);
+	// Store route information
+	const [route, setRoute] = useState(null);
 	const mapRef = useRef<MapRef | null>(null);
 
 	useEffect(() => {
@@ -45,7 +49,25 @@ export default function Home() {
 		fetchData();
 	}, []);
 
-	console.log('foodProgramsData', foodProgramsData);
+	// Get the route from the current location to the destination and update the route state
+	const getRoute = (start: number[], end: number[]) => {
+		console.log('getRoute');
+
+		const url = `https://api.mapbox.com/directions/v5/mapbox/walking/${start[0]},${start[1]};${end[0]},${end[1]}?geometries=geojson&access_token=${mapboxToken}`;
+		console.log(url);
+
+		fetch(url)
+			.then((response) => response.json())
+			.then((data) => {
+				console.log(data);
+
+				if (data.routes) {
+					setRoute(data.routes[0].geometry);
+					console.log(route);
+				}
+			})
+			.catch((err) => console.error('Error fetching route:', err));
+	};
 
 	const zoomToSelectedLoc = (
 		e: MouseEvent<HTMLButtonElement>,
@@ -58,6 +80,22 @@ export default function Home() {
 			mapRef.current.flyTo({
 				center: [foodProgram.longitude, foodProgram.latitude],
 				zoom: 13,
+			});
+		}
+	};
+
+	// Called when 'Direction' is clicked in the popup, retrieves the current location, and calculates the route
+	const handleDirectionClick = () => {
+		if (selectedMarker && mapRef.current) {
+			navigator.geolocation.getCurrentPosition((position) => {
+				const { latitude, longitude } = position.coords;
+				const start = [longitude, latitude];
+				const end = [
+					selectedMarker.foodProgram.longitude,
+					selectedMarker.foodProgram.latitude,
+				];
+
+				getRoute(start, end);
 			});
 		}
 	};
@@ -105,6 +143,7 @@ export default function Home() {
 						longitude={selectedMarker.foodProgram.longitude}
 						onClose={() => {
 							setSelectedMarker(null);
+							setRoute(null); // Set routes
 						}}
 						closeButton={false}
 					>
@@ -119,12 +158,38 @@ export default function Home() {
 							<label className={classes.popupLabel}>Address: </label>
 							<span>{selectedMarker.foodProgram.location_address}</span>
 							<br />
-							<button type='button' className='btn btn-primary'>
+							{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+							<p
+								onClick={handleDirectionClick}
+								style={{
+									cursor: 'pointer',
+									color: 'blue',
+									textDecoration: 'underline',
+								}}
+							>
 								Direction
-							</button>
+							</p>
 						</div>
 					</Popup>
 				) : null}
+				{/* Route */}
+				{route && (
+					<Source id='route' type='geojson' data={route}>
+						<Layer
+							id='route-layer'
+							type='line'
+							source='route'
+							layout={{
+								'line-join': 'round',
+								'line-cap': 'round',
+							}}
+							paint={{
+								'line-color': '#00b3b3',
+								'line-width': 8,
+							}}
+						/>
+					</Source>
+				)}
 			</Map>
 		</main>
 	);
