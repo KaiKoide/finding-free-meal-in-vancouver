@@ -50,23 +50,16 @@ export default function Home() {
 	}, []);
 
 	// Get the route from the current location to the destination and update the route state
-	const getRoute = (start: number[], end: number[]) => {
-		console.log('getRoute');
+	const getRoute = async (start: number[], end: number[]) => {
+		const directionUrl = `https://api.mapbox.com/directions/v5/mapbox/walking/${start[0]},${start[1]};${end[0]},${end[1]}?geometries=geojson&access_token=${mapboxToken}`;
 
-		const url = `https://api.mapbox.com/directions/v5/mapbox/walking/${start[0]},${start[1]};${end[0]},${end[1]}?geometries=geojson&access_token=${mapboxToken}`;
-		console.log(url);
-
-		fetch(url)
-			.then((response) => response.json())
-			.then((data) => {
-				console.log(data);
-
-				if (data.routes) {
-					setRoute(data.routes[0].geometry);
-					console.log(route);
-				}
-			})
-			.catch((err) => console.error('Error fetching route:', err));
+		try {
+			const response = await fetch(directionUrl);
+			const data = await response.json();
+			if (data.routes) setRoute(data.routes[0].geometry);
+		} catch (error) {
+			console.error('Error fetching route:', error);
+		}
 	};
 
 	const zoomToSelectedLoc = (
