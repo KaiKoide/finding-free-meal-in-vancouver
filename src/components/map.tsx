@@ -12,19 +12,20 @@ import Map, {
 	type MapRef,
 } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { MapPin } from 'lucide-react';
-import { Bookmark } from 'lucide-react';
+
+import { MapPin, Bookmark } from 'lucide-react';
 
 import classes from '@/app/Page.module.css';
 import { fetchFoodProgramsData } from '@/libs/api';
 import type FoodProgramsData from '@/types/foodProgramsData';
+import AlertComponent from './alertComponent';
 
 interface SelectedMarker {
 	foodProgram: FoodProgramsData;
 	index: number;
 }
 
-export default function Home() {
+export default function MapComponent() {
 	const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 	const [selectedMarker, setSelectedMarker] = useState<SelectedMarker | null>(
 		null,
@@ -34,6 +35,9 @@ export default function Home() {
 	);
 	// Store route information
 	const [route, setRoute] = useState(null);
+	const [showAlert, setShowAlert] = useState(false);
+	const [alertMessage, setAlertMessage] = useState('');
+
 	const mapRef = useRef<MapRef | null>(null);
 
 	useEffect(() => {
@@ -72,7 +76,6 @@ export default function Home() {
 		if (mapRef.current) {
 			mapRef.current.flyTo({
 				center: [foodProgram.longitude, foodProgram.latitude],
-				zoom: 13,
 			});
 		}
 	};
@@ -80,18 +83,52 @@ export default function Home() {
 	// Called when 'Direction' is clicked in the popup, retrieves the current location, and calculates the route
 	const handleDirectionClick = () => {
 		if (selectedMarker && mapRef.current) {
-			navigator.geolocation.getCurrentPosition((position) => {
-				const { latitude, longitude } = position.coords;
-				const start = [longitude, latitude];
-				const end = [
-					selectedMarker.foodProgram.longitude,
-					selectedMarker.foodProgram.latitude,
-				];
+			navigator.geolocation.getCurrentPosition(
+				(position) => {
+					const { latitude, longitude } = position.coords;
+					const start = [longitude, latitude];
+					const end = [
+						selectedMarker.foodProgram.longitude,
+						selectedMarker.foodProgram.latitude,
+					];
 
-				getRoute(start, end);
-			});
+					getRoute(start, end);
+				},
+				(error) => {
+					console.error(error);
+					let message = '';
+					switch (error.code) {
+						case 1:
+							// message = 'Access to location information was denied.';
+							setAlertMessage('Access to location information was denied.');
+							break;
+						case 2: //POSITION_UNAVAILABLE
+							// alert('現在位置が取得できませんでした');
+							// message = 'The current location could not be obtained.';
+							setAlertMessage('The current location could not be obtained.');
+							break;
+						case 3: //TIMEOUT
+							// alert('タイムアウトになりました');
+							setAlertMessage('The request for location information timed out');
+							// message = 'The request for location information timed out.';
+							break;
+						default:
+							// message = `An unknown error occurred (Error code: ${error.code}).`;
+							setAlertMessage(
+								`An unknown error occurred (Error code: ${error.code}).`,
+							);
+							// alert(`An unknown error occurred (Error code: ${error.code}).`);
+							break;
+					}
+					// setAlertMessage(message);
+					// console.log(alertMessage);
+					setShowAlert(true);
+				},
+			);
 		}
 	};
+
+	console.log('alertMessage', alertMessage);
 
 	return (
 		<main className={classes.mainStyle}>
@@ -184,6 +221,7 @@ export default function Home() {
 					</Source>
 				)}
 			</Map>
+			{showAlert && <AlertComponent alertMessage={alertMessage} />}
 		</main>
 	);
 }
