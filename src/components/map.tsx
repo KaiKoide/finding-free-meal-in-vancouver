@@ -18,18 +18,15 @@ import { MapPin, Bookmark } from 'lucide-react';
 import classes from '@/app/Page.module.css';
 import { fetchFoodProgramsData } from '@/libs/api';
 import type FoodProgramsData from '@/types/foodProgramsData';
-import AlertComponent from './alertComponent';
+import type SelectedMarkerData from '@/types/SelectedMarkerData';
 
-interface SelectedMarker {
-	foodProgram: FoodProgramsData;
-	index: number;
-}
+import AlertComponent from './alertComponent';
+import SheetComponent from './sheetComponent';
 
 export default function MapComponent() {
 	const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
-	const [selectedMarker, setSelectedMarker] = useState<SelectedMarker | null>(
-		null,
-	);
+	const [selectedMarker, setSelectedMarker] =
+		useState<SelectedMarkerData | null>(null);
 	const [foodProgramsData, setFoodProgramsData] = useState<FoodProgramsData[]>(
 		[],
 	);
@@ -76,8 +73,10 @@ export default function MapComponent() {
 		if (mapRef.current) {
 			mapRef.current.flyTo({
 				center: [foodProgram.longitude, foodProgram.latitude],
+				zoom: 13,
 			});
 		}
+		document.getElementById('sheet-trigger')?.click();
 	};
 
 	// Called when 'Direction' is clicked in the popup, retrieves the current location, and calculates the route
@@ -167,40 +166,41 @@ export default function MapComponent() {
 					);
 				})}
 				{selectedMarker ? (
-					<Popup
-						offset={25}
-						latitude={selectedMarker.foodProgram.latitude}
-						longitude={selectedMarker.foodProgram.longitude}
-						onClose={() => {
-							setSelectedMarker(null);
-							setRoute(null); // Set routes
-						}}
-						closeButton={false}
-					>
-						{/* <Bookmark /> */}
-						<h3 className={classes.popupTitle}>
-							{selectedMarker.foodProgram.program_name}
-						</h3>
-						<div className={classes.popupInfo}>
-							<label className={classes.popupLabel}>Description: </label>
-							<span>{selectedMarker.foodProgram.description}</span>
-							<br />
-							<label className={classes.popupLabel}>Address: </label>
-							<span>{selectedMarker.foodProgram.location_address}</span>
-							<br />
-							{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
-							<p
-								onClick={handleDirectionClick}
-								style={{
-									cursor: 'pointer',
-									color: 'blue',
-									textDecoration: 'underline',
-								}}
-							>
-								Direction
-							</p>
-						</div>
-					</Popup>
+					<>
+						{/* <Popup
+							offset={25}
+							latitude={selectedMarker.foodProgram.latitude}
+							longitude={selectedMarker.foodProgram.longitude}
+							onClose={() => {
+								setSelectedMarker(null);
+								setRoute(null); // Set routes
+							}}
+							closeButton={false}
+						>
+							<h3 className={classes.popupTitle}>
+								{selectedMarker.foodProgram.program_name}
+							</h3>
+							<div className={classes.popupInfo}>
+								<label className={classes.popupLabel}>Description: </label>
+								<span>{selectedMarker.foodProgram.description}</span>
+								<br />
+								<label className={classes.popupLabel}>Address: </label>
+								<span>{selectedMarker.foodProgram.location_address}</span>
+								<br />
+								<p
+									onClick={handleDirectionClick}
+									style={{
+										cursor: 'pointer',
+										color: 'blue',
+										textDecoration: 'underline',
+									}}
+								>
+									Direction
+								</p>
+							</div>
+						</Popup> */}
+						<SheetComponent selectedMarker={selectedMarker} />
+					</>
 				) : null}
 				{/* Route */}
 				{route && (
