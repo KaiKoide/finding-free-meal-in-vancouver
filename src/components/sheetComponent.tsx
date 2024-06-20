@@ -7,14 +7,17 @@ import {
 	SheetTitle,
 	SheetTrigger,
 } from '@/components/ui/sheet';
+import { Button } from '@/components/ui/button';
 import type SelectedMarkerData from '@/types/SelectedMarkerData';
 
 interface SheetComponentProps {
 	selectedMarker: SelectedMarkerData | null;
+	onChildClick: React.MouseEventHandler<HTMLButtonElement>;
 }
 
 export default function SheetComponent({
 	selectedMarker,
+	onChildClick,
 }: SheetComponentProps) {
 	console.log('selectedMarker', selectedMarker);
 
@@ -28,10 +31,6 @@ export default function SheetComponent({
 			<SheetContent>
 				<SheetHeader>
 					<SheetTitle>{selectedMarker?.foodProgram.program_name}</SheetTitle>
-					{/* <SheetDescription>
-						This action cannot be undone. This will permanently delete your
-						account and remove your data from our servers.
-					</SheetDescription> */}
 				</SheetHeader>
 				<div>
 					<h2 className='font-bold capitalize mt-5'>description</h2>
@@ -54,6 +53,9 @@ export default function SheetComponent({
 						</>
 					)}
 				</div>
+				<Button onClick={onChildClick} className='mt-5'>
+					get direction
+				</Button>
 			</SheetContent>
 		</Sheet>
 	);

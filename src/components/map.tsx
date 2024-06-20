@@ -34,6 +34,7 @@ export default function MapComponent() {
 	const [route, setRoute] = useState(null);
 	const [showAlert, setShowAlert] = useState(false);
 	const [alertMessage, setAlertMessage] = useState('');
+	const [isSheetOpen, setIsSheetOpen] = useState(false);
 
 	const mapRef = useRef<MapRef | null>(null);
 
@@ -70,6 +71,7 @@ export default function MapComponent() {
 	) => {
 		e.stopPropagation();
 		setSelectedMarker({ foodProgram, index });
+		setIsSheetOpen(true);
 		if (mapRef.current) {
 			mapRef.current.flyTo({
 				center: [foodProgram.longitude, foodProgram.latitude],
@@ -199,7 +201,10 @@ export default function MapComponent() {
 								</p>
 							</div>
 						</Popup> */}
-						<SheetComponent selectedMarker={selectedMarker} />
+						<SheetComponent
+							onChildClick={handleDirectionClick}
+							selectedMarker={selectedMarker}
+						/>
 					</>
 				) : null}
 				{/* Route */}
