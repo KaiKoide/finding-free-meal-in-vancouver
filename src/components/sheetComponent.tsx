@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import type SelectedMarkerData from '@/types/SelectedMarkerData';
+import { BookmarkPlus } from 'lucide-react';
 
 interface SheetComponentProps {
 	selectedMarker: SelectedMarkerData | null;
@@ -53,9 +54,10 @@ export default function SheetComponent({
 						</>
 					)}
 				</div>
-				<Button onClick={onChildClick} className='mt-5'>
-					get direction
-				</Button>
+				<div className='flex items-center mt-5 gap-5'>
+					<Button onClick={onChildClick}>get direction</Button>
+					<BookmarkPlus className='cursor-pointer' />
+				</div>
 			</SheetContent>
 		</Sheet>
 	);
