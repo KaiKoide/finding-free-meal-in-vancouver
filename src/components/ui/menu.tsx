@@ -2,24 +2,19 @@
 import { Menu } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import {
-	Sheet,
-	SheetClose,
-	SheetContent,
-	SheetDescription,
-	SheetFooter,
-	SheetHeader,
-	SheetTitle,
-	SheetTrigger,
-} from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { useState } from 'react';
+import FavoriteContent from '../favoriteComponent';
 
 export function MenuBar() {
-	const handleClick = () => {
-		console.log('clicked');
+	const [selectedItem, setSelectedItem] = useState<string | null>(null);
+
+	const handleClick = (item: string) => {
+		setSelectedItem(item);
 	};
 
 	return (
-		<div className='m-5'>
+		<div className='p-5'>
 			<Sheet>
 				<SheetTrigger asChild>
 					<Menu
@@ -28,22 +23,17 @@ export function MenuBar() {
 					/>
 				</SheetTrigger>
 				<SheetContent side='left'>
-					<SheetHeader>
-						<SheetTitle>Edit profile</SheetTitle>
-						{/* <SheetDescription>
-							Make changes to your profile here. Click save when you're done.
-						</SheetDescription> */}
-					</SheetHeader>
 					<ul className='my-5'>
 						<li className='uppercase'>top</li>
 						<li className='uppercase'>map</li>
-						<li className='uppercase'>favorite</li>
+						{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+						<li className='uppercase' onClick={() => handleClick('Favorite')}>
+							favorite
+						</li>
 					</ul>
-					<SheetFooter>
-						<SheetClose asChild>
-							<Button type='submit'>Save changes</Button>
-						</SheetClose>
-					</SheetFooter>
+					<div className='content'>
+						{selectedItem === 'Favorite' && <FavoriteContent />}
+					</div>
 				</SheetContent>
 			</Sheet>
 		</div>
