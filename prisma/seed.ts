@@ -6,8 +6,8 @@ async function seed() {
 	const favorite = await prisma.favoriteList.create({
 		data: {
 			name: 'test',
-			lat: '49.28967576079232',
-			lon: '-123.13857731195915',
+			lat: 49.28967576079232,
+			lon: -123.13857731195915,
 		},
 	});
 

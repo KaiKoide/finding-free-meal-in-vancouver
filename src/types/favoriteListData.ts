@@ -1,7 +1,7 @@
 export default interface FavoriteListData {
 	id: number;
-	lat: string;
-	lon: string;
+	lat: number;
+	lon: number;
 	name: string;
 	userId: string | null;
 }
