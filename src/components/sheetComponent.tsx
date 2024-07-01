@@ -10,6 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import type SelectedMarkerData from '@/types/SelectedMarkerData';
 import { BookmarkPlus } from 'lucide-react';
+import { addFavorite } from '@/lib/database/api';
 
 interface SheetComponentProps {
 	selectedMarker: SelectedMarkerData | null;
@@ -21,6 +22,14 @@ export default function SheetComponent({
 	onChildClick,
 }: SheetComponentProps) {
 	console.log('selectedMarker', selectedMarker);
+
+	function handleClick() {
+		addFavorite(
+			selectedMarker?.foodProgram.program_name as string,
+			selectedMarker?.foodProgram.latitude as number,
+			selectedMarker?.foodProgram.longitude as number,
+		);
+	}
 
 	return (
 		<Sheet>
@@ -56,7 +65,7 @@ export default function SheetComponent({
 				</div>
 				<div className='flex items-center mt-5 gap-5'>
 					<Button onClick={onChildClick}>get direction</Button>
-					<BookmarkPlus className='cursor-pointer' />
+					<BookmarkPlus className='cursor-pointer' onClick={handleClick} />
 				</div>
 			</SheetContent>
 		</Sheet>

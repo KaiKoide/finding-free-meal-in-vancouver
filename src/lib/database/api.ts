@@ -12,3 +12,18 @@ export async function fetchFavoriteList() {
 		console.error('Error fetching data:', error);
 	}
 }
+
+export async function addFavorite(name: string, lat: number, lon: number) {
+	try {
+		const newRecord = await prisma.favoriteList.create({
+			data: {
+				name,
+				lat,
+				lon,
+			},
+		});
+		console.log('Adding new record successfully:', newRecord);
+	} catch (error) {
+		console.error('Error adding data:', error);
+	}
+}
