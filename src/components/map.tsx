@@ -16,7 +16,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { MapPin, Bookmark } from 'lucide-react';
 
 import classes from '@/app/Page.module.css';
-import { fetchFoodProgramsData } from '@/libs/api';
+import { fetchFoodProgramsData } from '@/lib/foodPrograms/api';
 import type FoodProgramsData from '@/types/foodProgramsData';
 import type SelectedMarkerData from '@/types/SelectedMarkerData';
 
