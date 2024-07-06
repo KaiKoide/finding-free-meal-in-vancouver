@@ -15,6 +15,7 @@ import { addFavorite } from '@/lib/database/api';
 import useFavoriteStore from '@/store/useFavoriteStore';
 import type SelectedMarkerData from '@/types/SelectedMarkerData';
 import type FoodProgramsData from '@/types/foodProgramsData';
+import type FavoriteListData from '@/types/favoriteListData';
 
 interface SheetComponentProps {
 	selectedMarker: SelectedMarkerData | null;
@@ -27,6 +28,9 @@ export default function SheetComponent({
 }: SheetComponentProps) {
 	const favoriteList = useFavoriteStore((state) => state.favoriteList);
 	const fetchFavorites = useFavoriteStore((state) => state.fetchFavorite);
+	const addFavoriteToStore = useFavoriteStore(
+		(state) => state.addFavoriteToStore,
+	);
 
 	useEffect(() => {
 		fetchFavorites();
@@ -39,11 +43,30 @@ export default function SheetComponent({
 				selectedMarker.foodProgram.latitude,
 				selectedMarker.foodProgram.longitude,
 			);
-			setFavoriteList((prev) => [...prev, selectedMarker]);
+			const favorite: FavoriteListData = {
+				id: favoriteList.length + 1,
+				name: selectedMarker.foodProgram.program_name,
+				lat: selectedMarker.foodProgram.latitude,
+				lon: selectedMarker.foodProgram.longitude,
+				userId: null,
+			};
+			addFavoriteToStore(favorite);
+			console.log('favoriteList', favoriteList);
 		}
 	}
 
-	console.log('favoriteList', favoriteList);
+	const isFavorite = () => {
+		if (!selectedMarker) return false;
+		return favoriteList.some((favorite) => {
+			return (
+				favorite.name === selectedMarker.foodProgram.program_name ||
+				favorite.lat === selectedMarker.foodProgram.latitude ||
+				favorite.lon === selectedMarker.foodProgram.longitude
+			);
+		});
+	};
+
+	console.log(isFavorite());
 
 	return (
 		<Sheet>
@@ -79,10 +102,17 @@ export default function SheetComponent({
 				</div>
 				<div className='flex items-center mt-5 gap-5'>
 					<Button onClick={onChildClick}>get direction</Button>
-					<BookmarkMinus
-						className='cursor-pointer bg-pink-400 text-pink-700 rounded-full h-9 w-9 p-1.5 border'
-						onClick={handleClick}
-					/>
+					{isFavorite() ? (
+						<BookmarkMinus
+							className='cursor-pointer bg-pink-400 text-pink-700 rounded-full h-9 w-9 p-1.5 border'
+							onClick={handleClick}
+						/>
+					) : (
+						<BookmarkPlus
+							className='cursor-pointer border h-9 w-9 p-1.5 rounded-full'
+							onClick={handleClick}
+						/>
+					)}
 				</div>
 			</SheetContent>
 		</Sheet>

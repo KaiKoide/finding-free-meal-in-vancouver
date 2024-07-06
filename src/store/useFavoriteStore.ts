@@ -6,6 +6,7 @@ import type FavoriteListData from '@/types/favoriteListData';
 interface FavoriteState {
 	favoriteList: FavoriteListData[];
 	fetchFavorite: () => Promise<void>;
+	addFavoriteToStore: (favorite: FavoriteListData) => void;
 }
 
 const useFavoriteStore = create<FavoriteState>((set) => ({
@@ -18,6 +19,10 @@ const useFavoriteStore = create<FavoriteState>((set) => ({
 			console.error('Error fetching data', error);
 		}
 	},
+	addFavoriteToStore: (favorite: FavoriteListData) =>
+		set((state) => ({
+			favoriteList: [...state.favoriteList, favorite],
+		})),
 }));
 
 export default useFavoriteStore;
