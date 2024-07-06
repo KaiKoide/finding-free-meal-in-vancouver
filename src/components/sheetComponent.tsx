@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { BookmarkMinus, BookmarkPlus } from 'lucide-react';
 
 import {
@@ -11,7 +11,7 @@ import {
 	SheetTrigger,
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { addFavorite } from '@/lib/database/api';
+import { addFavorite, removeFavorite } from '@/lib/database/api';
 import useFavoriteStore from '@/store/useFavoriteStore';
 import type SelectedMarkerData from '@/types/SelectedMarkerData';
 import type FoodProgramsData from '@/types/foodProgramsData';
@@ -31,20 +31,24 @@ export default function SheetComponent({
 	const addFavoriteToStore = useFavoriteStore(
 		(state) => state.addFavoriteToStore,
 	);
+	const removeFavoriteFromStore = useFavoriteStore(
+		(state) => state.removeFavoriteFromStore,
+	);
 
 	useEffect(() => {
 		fetchFavorites();
 	}, [fetchFavorites]);
 
-	function handleClick() {
+	function handleAddClick() {
 		if (selectedMarker) {
 			addFavorite(
+				selectedMarker.index,
 				selectedMarker.foodProgram.program_name,
 				selectedMarker.foodProgram.latitude,
 				selectedMarker.foodProgram.longitude,
 			);
 			const favorite: FavoriteListData = {
-				id: favoriteList.length + 1,
+				id: selectedMarker.index,
 				name: selectedMarker.foodProgram.program_name,
 				lat: selectedMarker.foodProgram.latitude,
 				lon: selectedMarker.foodProgram.longitude,
@@ -54,6 +58,19 @@ export default function SheetComponent({
 			console.log('favoriteList', favoriteList);
 		}
 	}
+
+	function handleRemoveClick() {
+		try {
+			if (selectedMarker) {
+				removeFavorite(selectedMarker.index);
+				removeFavoriteFromStore(selectedMarker.index);
+			}
+		} catch (error) {
+			console.error('Something wrong!');
+		}
+	}
+
+	console.log('selectedMarker', selectedMarker);
 
 	const isFavorite = () => {
 		if (!selectedMarker) return false;
@@ -105,12 +122,12 @@ export default function SheetComponent({
 					{isFavorite() ? (
 						<BookmarkMinus
 							className='cursor-pointer bg-pink-400 text-pink-700 rounded-full h-9 w-9 p-1.5 border'
-							onClick={handleClick}
+							onClick={handleRemoveClick}
 						/>
 					) : (
 						<BookmarkPlus
 							className='cursor-pointer border h-9 w-9 p-1.5 rounded-full'
-							onClick={handleClick}
+							onClick={handleAddClick}
 						/>
 					)}
 				</div>

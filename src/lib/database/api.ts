@@ -13,10 +13,16 @@ export async function fetchFavoriteList() {
 	}
 }
 
-export async function addFavorite(name: string, lat: number, lon: number) {
+export async function addFavorite(
+	id: number,
+	name: string,
+	lat: number,
+	lon: number,
+) {
 	try {
 		const newRecord = await prisma.favoriteList.create({
 			data: {
+				id,
 				name,
 				lat,
 				lon,
@@ -25,5 +31,18 @@ export async function addFavorite(name: string, lat: number, lon: number) {
 		console.log('Adding new record successfully:', newRecord);
 	} catch (error) {
 		console.error('Error adding data:', error);
+	}
+}
+
+export async function removeFavorite(id: number) {
+	try {
+		const deleteFavorite = await prisma.favoriteList.delete({
+			where: {
+				id: id,
+			},
+		});
+		console.log('Deleting favorite successfully!', deleteFavorite);
+	} catch (error) {
+		console.error('Error removing data:', error);
 	}
 }

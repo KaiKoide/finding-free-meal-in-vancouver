@@ -7,6 +7,7 @@ interface FavoriteState {
 	favoriteList: FavoriteListData[];
 	fetchFavorite: () => Promise<void>;
 	addFavoriteToStore: (favorite: FavoriteListData) => void;
+	removeFavoriteFromStore: (id: number) => void;
 }
 
 const useFavoriteStore = create<FavoriteState>((set) => ({
@@ -22,6 +23,10 @@ const useFavoriteStore = create<FavoriteState>((set) => ({
 	addFavoriteToStore: (favorite: FavoriteListData) =>
 		set((state) => ({
 			favoriteList: [...state.favoriteList, favorite],
+		})),
+	removeFavoriteFromStore: (id: number) =>
+		set((state) => ({
+			favoriteList: state.favoriteList.filter((favorite) => favorite.id !== id),
 		})),
 }));
 
