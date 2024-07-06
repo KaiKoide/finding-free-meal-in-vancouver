@@ -1,4 +1,7 @@
 'use client';
+import { useEffect, useState } from 'react';
+import { BookmarkMinus, BookmarkPlus } from 'lucide-react';
+
 import {
 	Sheet,
 	SheetContent,
@@ -8,9 +11,10 @@ import {
 	SheetTrigger,
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import type SelectedMarkerData from '@/types/SelectedMarkerData';
-import { BookmarkPlus } from 'lucide-react';
 import { addFavorite } from '@/lib/database/api';
+import useFavoriteStore from '@/store/useFavoriteStore';
+import type SelectedMarkerData from '@/types/SelectedMarkerData';
+import type FoodProgramsData from '@/types/foodProgramsData';
 
 interface SheetComponentProps {
 	selectedMarker: SelectedMarkerData | null;
@@ -21,15 +25,25 @@ export default function SheetComponent({
 	selectedMarker,
 	onChildClick,
 }: SheetComponentProps) {
-	console.log('selectedMarker', selectedMarker);
+	const favoriteList = useFavoriteStore((state) => state.favoriteList);
+	const fetchFavorites = useFavoriteStore((state) => state.fetchFavorite);
+
+	useEffect(() => {
+		fetchFavorites();
+	}, [fetchFavorites]);
 
 	function handleClick() {
-		addFavorite(
-			selectedMarker?.foodProgram.program_name as string,
-			selectedMarker?.foodProgram.latitude as number,
-			selectedMarker?.foodProgram.longitude as number,
-		);
+		if (selectedMarker) {
+			addFavorite(
+				selectedMarker.foodProgram.program_name,
+				selectedMarker.foodProgram.latitude,
+				selectedMarker.foodProgram.longitude,
+			);
+			setFavoriteList((prev) => [...prev, selectedMarker]);
+		}
 	}
+
+	console.log('favoriteList', favoriteList);
 
 	return (
 		<Sheet>
@@ -65,7 +79,10 @@ export default function SheetComponent({
 				</div>
 				<div className='flex items-center mt-5 gap-5'>
 					<Button onClick={onChildClick}>get direction</Button>
-					<BookmarkPlus className='cursor-pointer' onClick={handleClick} />
+					<BookmarkMinus
+						className='cursor-pointer bg-pink-400 text-pink-700 rounded-full h-9 w-9 p-1.5 border'
+						onClick={handleClick}
+					/>
 				</div>
 			</SheetContent>
 		</Sheet>

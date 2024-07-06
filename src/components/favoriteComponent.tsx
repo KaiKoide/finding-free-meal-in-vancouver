@@ -4,21 +4,17 @@ import { useEffect, useState } from 'react';
 
 import { fetchFavoriteList } from '@/lib/database/api';
 import type FavoriteListData from '@/types/favoriteListData';
+import useFavoriteStore from '@/store/useFavoriteStore';
 
 const FavoriteContent = () => {
-	const [favoriteList, setFavoriteList] = useState<FavoriteListData[]>([]);
+	const favoriteList = useFavoriteStore((state) => state.favoriteList);
+	const fetchFavorites = useFavoriteStore((state) => state.fetchFavorite);
 
 	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				const fetchedData = await fetchFavoriteList();
-				if (fetchedData) setFavoriteList(fetchedData);
-			} catch (error) {
-				console.error('Error fetching data:', error);
-			}
-		};
-		fetchData();
-	}, []);
+		fetchFavorites();
+	}, [fetchFavorites]);
+
+	console.log('favoriteList', favoriteList);
 
 	return (
 		<div>
