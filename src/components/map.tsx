@@ -17,6 +17,7 @@ import { MapPin } from 'lucide-react';
 
 import classes from '@/app/Page.module.css';
 import { fetchFoodProgramsData } from '@/lib/foodPrograms/api';
+import { cn } from '@/lib/utils';
 import useSelectedProgramStore from '@/store/useSelectedProgramStore';
 import type FoodProgramsData from '@/types/foodProgramsData';
 import type SelectedMarkerData from '@/types/SelectedMarkerData';
@@ -35,7 +36,6 @@ export default function MapComponent() {
 	const [route, setRoute] = useState(null);
 	const [showAlert, setShowAlert] = useState(false);
 	const [alertMessage, setAlertMessage] = useState('');
-	const [isSheetOpen, setIsSheetOpen] = useState(false);
 
 	const mapRef = useRef<MapRef | null>(null);
 
@@ -76,7 +76,6 @@ export default function MapComponent() {
 	) => {
 		e.stopPropagation();
 		setSelectedMarker({ foodProgram, index });
-		setIsSheetOpen(true);
 		if (mapRef.current) {
 			mapRef.current.flyTo({
 				center: [foodProgram.longitude, foodProgram.latitude],
@@ -170,7 +169,9 @@ export default function MapComponent() {
 								{
 									<MapPin
 										size={selectedProgramId === index ? 40 : 30}
-										className=' stroke-red-400'
+										className={cn('stroke-cyan-500', {
+											'stroke-red-400': selectedProgramId === index,
+										})}
 									/>
 								}
 							</button>
