@@ -83,8 +83,6 @@ export default function SheetComponent({
 		});
 	};
 
-	console.log(isFavorite());
-
 	return (
 		<Sheet>
 			<SheetTrigger asChild>

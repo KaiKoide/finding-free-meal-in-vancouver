@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 
 import { removeFavorite } from '@/lib/database/api';
 import useFavoriteStore from '@/store/useFavoriteStore';
+import useSelectedProgramStore from '@/store/useSelectedProgramStore';
+
 import { Button } from './ui/button';
 
 const FavoriteContent = () => {
@@ -11,6 +13,10 @@ const FavoriteContent = () => {
 	const fetchFavorites = useFavoriteStore((state) => state.fetchFavorite);
 	const removeFavoriteFromStore = useFavoriteStore(
 		(state) => state.removeFavoriteFromStore,
+	);
+
+	const setSelectedProgramId = useSelectedProgramStore(
+		(state) => state.setSelectedProgramId,
 	);
 
 	useEffect(() => {
@@ -30,13 +36,22 @@ const FavoriteContent = () => {
 		}
 	}
 
+	function handleSelectClick(favoriteId: number) {
+		setSelectedProgramId(favoriteId);
+	}
+
 	return (
 		<div>
 			{favoriteList.map((favorite) => (
 				<div key={favorite.id} className='flex flex-col gap-2 mt-5'>
 					<p>{favorite.name}</p>
 					<div className='flex gap-3 justify-end'>
-						<Button className='capitalize'>get direction</Button>
+						<Button
+							className='capitalize'
+							onClick={() => handleSelectClick(favorite.id)}
+						>
+							select
+						</Button>
 						<Button
 							variant='destructive'
 							className='capitalize'

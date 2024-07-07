@@ -13,10 +13,11 @@ import Map, {
 } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-import { MapPin, Bookmark } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 
 import classes from '@/app/Page.module.css';
 import { fetchFoodProgramsData } from '@/lib/foodPrograms/api';
+import useSelectedProgramStore from '@/store/useSelectedProgramStore';
 import type FoodProgramsData from '@/types/foodProgramsData';
 import type SelectedMarkerData from '@/types/SelectedMarkerData';
 
@@ -37,6 +38,10 @@ export default function MapComponent() {
 	const [isSheetOpen, setIsSheetOpen] = useState(false);
 
 	const mapRef = useRef<MapRef | null>(null);
+
+	const selectedProgramId = useSelectedProgramStore(
+		(state) => state.selectedProgramId,
+	);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -162,7 +167,12 @@ export default function MapComponent() {
 								className='cursor-pointer'
 								onClick={(e) => zoomToSelectedLoc(e, foodProgram, index)}
 							>
-								{<MapPin size={30} color='tomato' />}
+								{
+									<MapPin
+										size={selectedProgramId === index ? 40 : 30}
+										className=' stroke-red-400'
+									/>
+								}
 							</button>
 						</Marker>
 					);
