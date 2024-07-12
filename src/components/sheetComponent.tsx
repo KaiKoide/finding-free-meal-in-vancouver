@@ -5,7 +5,6 @@ import { BookmarkMinus, BookmarkPlus } from 'lucide-react';
 import {
 	Sheet,
 	SheetContent,
-	SheetDescription,
 	SheetHeader,
 	SheetTitle,
 	SheetTrigger,
@@ -14,7 +13,6 @@ import { Button } from '@/components/ui/button';
 import { addFavorite, removeFavorite } from '@/lib/database/api';
 import useFavoriteStore from '@/store/useFavoriteStore';
 import type SelectedMarkerData from '@/types/SelectedMarkerData';
-import type FoodProgramsData from '@/types/foodProgramsData';
 import type FavoriteListData from '@/types/favoriteListData';
 
 interface SheetComponentProps {
@@ -55,7 +53,6 @@ export default function SheetComponent({
 				userId: null,
 			};
 			addFavoriteToStore(favorite);
-			console.log('favoriteList', favoriteList);
 		}
 	}
 
@@ -69,8 +66,6 @@ export default function SheetComponent({
 			console.error('Something wrong!');
 		}
 	}
-
-	console.log('selectedMarker', selectedMarker);
 
 	const isFavorite = () => {
 		if (!selectedMarker) return false;

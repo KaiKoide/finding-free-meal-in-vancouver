@@ -41,9 +41,9 @@ const FavoriteContent = () => {
 	}
 
 	return (
-		<div>
+		<div className='overflow-y-scroll h-[90vh] pb-20'>
 			{favoriteList.map((favorite) => (
-				<div key={favorite.id} className='flex flex-col gap-2 mt-5'>
+				<div key={favorite.id} className='flex flex-col gap-2 mb-5 '>
 					<p>{favorite.name}</p>
 					<div className='flex gap-3 justify-end'>
 						<Button
