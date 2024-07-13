@@ -23,10 +23,13 @@ export function MenuBar() {
 				</SheetTrigger>
 				<SheetContent side='left'>
 					<ul className='my-5'>
-						<li className='uppercase'>top</li>
-						<li className='uppercase'>map</li>
+						<li className='uppercase cursor-pointer'>top</li>
+						<li className='uppercase cursor-pointer'>map</li>
 						{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
-						<li className='uppercase' onClick={() => handleClick('Favorite')}>
+						<li
+							className='uppercase cursor-pointer'
+							onClick={() => handleClick('Favorite')}
+						>
 							favorite
 						</li>
 					</ul>
