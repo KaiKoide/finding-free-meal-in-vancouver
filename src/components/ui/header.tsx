@@ -5,10 +5,13 @@ import useSelectedProgramStore from '@/store/useSelectedProgramStore';
 import useRouteStore from '@/store/useRouteStore';
 
 export function Header() {
+	const selectedProgramId = useSelectedProgramStore(
+		(state) => state.selectedProgramId,
+	);
 	const setSelectedProgramId = useSelectedProgramStore(
 		(state) => state.setSelectedProgramId,
 	);
-	const { setRoute } = useRouteStore();
+	const { route, setRoute } = useRouteStore();
 
 	function handleClick() {
 		setSelectedProgramId(null);
@@ -18,9 +21,11 @@ export function Header() {
 	return (
 		<div className='bg-gray-100 flex items-center'>
 			<MenuBar />
-			<Button className='capitalize' onClick={handleClick}>
-				reset
-			</Button>
+			{(route !== null || selectedProgramId !== null) && (
+				<Button className='capitalize' onClick={handleClick}>
+					reset
+				</Button>
+			)}
 		</div>
 	);
 }

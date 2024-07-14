@@ -23,8 +23,6 @@ const FavoriteContent = () => {
 		fetchFavorites();
 	}, [fetchFavorites]);
 
-	console.log('favoriteList', favoriteList);
-
 	function handleRemoveClick(favoriteId: number) {
 		try {
 			if (favoriteList) {
