@@ -5,7 +5,7 @@ interface RouteState {
 		type: string;
 		coordinates: number[][];
 	} | null;
-	setRoute: (route: { type: string; coordinates: number[][] }) => void;
+	setRoute: (route: { type: string; coordinates: number[][] } | null) => void;
 }
 const useRouteStore = create<RouteState>((set) => ({
 	route: null,
