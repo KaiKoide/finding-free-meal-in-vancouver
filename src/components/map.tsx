@@ -19,10 +19,10 @@ import classes from '@/app/Page.module.css';
 import { fetchFoodProgramsData } from '@/lib/foodPrograms/api';
 import { cn } from '@/lib/utils';
 import useSelectedProgramStore from '@/store/useSelectedProgramStore';
+import useRouteStore from '@/store/useRouteStore';
 import type FoodProgramsData from '@/types/foodProgramsData';
 import type SelectedMarkerData from '@/types/SelectedMarkerData';
 
-import AlertComponent from './alertComponent';
 import SheetComponent from './sheetComponent';
 
 export default function MapComponent() {
@@ -32,8 +32,6 @@ export default function MapComponent() {
 	const [foodProgramsData, setFoodProgramsData] = useState<FoodProgramsData[]>(
 		[],
 	);
-	// Store route information
-	const [route, setRoute] = useState(null);
 	const [showAlert, setShowAlert] = useState(false);
 	const [alertMessage, setAlertMessage] = useState('');
 
@@ -42,6 +40,7 @@ export default function MapComponent() {
 	const selectedProgramId = useSelectedProgramStore(
 		(state) => state.selectedProgramId,
 	);
+	const { route, setRoute } = useRouteStore();
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -230,14 +229,13 @@ export default function MapComponent() {
 								'line-cap': 'round',
 							}}
 							paint={{
-								'line-color': '#00b3b3',
+								'line-color': '#A78BFA',
 								'line-width': 8,
 							}}
 						/>
 					</Source>
 				)}
 			</Map>
-			{showAlert && <AlertComponent alertMessage={alertMessage} />}
 		</main>
 	);
 }
