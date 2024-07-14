@@ -13,7 +13,7 @@ datasource db {
 model FavoriteList {
   id    Int     @id @default(autoincrement())
   name  String
-  lat String
-  lon String
+  lat Float
+  lon Float
   userId String?
 }

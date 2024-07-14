@@ -1,9 +1,10 @@
 import MapComponent from '../components/map';
+import { Header } from '@/components/ui/header';
 
 export default function Home() {
 	return (
 		<div>
-			<h1>This is page.tsx</h1>
+			<Header />
 			<MapComponent />
 		</div>
 	);

@@ -1,14 +1,19 @@
 'use client';
+import { useEffect } from 'react';
+import { BookmarkMinus, BookmarkPlus } from 'lucide-react';
+
 import {
 	Sheet,
 	SheetContent,
-	SheetDescription,
 	SheetHeader,
 	SheetTitle,
 	SheetTrigger,
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
+import { addFavorite, removeFavorite } from '@/lib/database/api';
+import useFavoriteStore from '@/store/useFavoriteStore';
 import type SelectedMarkerData from '@/types/SelectedMarkerData';
+import type FavoriteListData from '@/types/favoriteListData';
 
 interface SheetComponentProps {
 	selectedMarker: SelectedMarkerData | null;
@@ -19,7 +24,59 @@ export default function SheetComponent({
 	selectedMarker,
 	onChildClick,
 }: SheetComponentProps) {
-	console.log('selectedMarker', selectedMarker);
+	const favoriteList = useFavoriteStore((state) => state.favoriteList);
+	const fetchFavorites = useFavoriteStore((state) => state.fetchFavorite);
+	const addFavoriteToStore = useFavoriteStore(
+		(state) => state.addFavoriteToStore,
+	);
+	const removeFavoriteFromStore = useFavoriteStore(
+		(state) => state.removeFavoriteFromStore,
+	);
+
+	useEffect(() => {
+		fetchFavorites();
+	}, [fetchFavorites]);
+
+	function handleAddClick() {
+		if (selectedMarker) {
+			addFavorite(
+				selectedMarker.index,
+				selectedMarker.foodProgram.program_name,
+				selectedMarker.foodProgram.latitude,
+				selectedMarker.foodProgram.longitude,
+			);
+			const favorite: FavoriteListData = {
+				id: selectedMarker.index,
+				name: selectedMarker.foodProgram.program_name,
+				lat: selectedMarker.foodProgram.latitude,
+				lon: selectedMarker.foodProgram.longitude,
+				userId: null,
+			};
+			addFavoriteToStore(favorite);
+		}
+	}
+
+	function handleRemoveClick() {
+		try {
+			if (selectedMarker) {
+				removeFavorite(selectedMarker.index);
+				removeFavoriteFromStore(selectedMarker.index);
+			}
+		} catch (error) {
+			console.error('Something wrong!');
+		}
+	}
+
+	const isFavorite = () => {
+		if (!selectedMarker) return false;
+		return favoriteList.some((favorite) => {
+			return (
+				favorite.name === selectedMarker.foodProgram.program_name ||
+				favorite.lat === selectedMarker.foodProgram.latitude ||
+				favorite.lon === selectedMarker.foodProgram.longitude
+			);
+		});
+	};
 
 	return (
 		<Sheet>
@@ -53,9 +110,20 @@ export default function SheetComponent({
 						</>
 					)}
 				</div>
-				<Button onClick={onChildClick} className='mt-5'>
-					get direction
-				</Button>
+				<div className='flex items-center mt-5 gap-5'>
+					<Button onClick={onChildClick}>get direction</Button>
+					{isFavorite() ? (
+						<BookmarkMinus
+							className='cursor-pointer bg-pink-400 text-pink-700 rounded-full h-9 w-9 p-1.5 border'
+							onClick={handleRemoveClick}
+						/>
+					) : (
+						<BookmarkPlus
+							className='cursor-pointer border h-9 w-9 p-1.5 rounded-full'
+							onClick={handleAddClick}
+						/>
+					)}
+				</div>
 			</SheetContent>
 		</Sheet>
 	);
