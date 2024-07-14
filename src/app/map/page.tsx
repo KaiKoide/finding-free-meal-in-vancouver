@@ -1,13 +1,11 @@
-import Image from 'next/image';
-
 import MapComponent from '@/components/map';
 import { Header } from '@/components/ui/header';
 
-export default function Home() {
+export default function MapPage() {
 	return (
 		<div>
 			<Header />
-			<Image src='/images/top.webp' alt='map' width={1920} height={1080} />
+			<MapComponent />
 		</div>
 	);
 }
