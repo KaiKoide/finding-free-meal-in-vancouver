@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 import { Menu } from 'lucide-react';
 
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -16,15 +17,16 @@ export function MenuBar() {
 		<div className='p-5'>
 			<Sheet>
 				<SheetTrigger asChild>
-					<Menu
-						onClick={handleClick}
-						className='cursor-pointer text-slate-500'
-					/>
+					<Menu className='cursor-pointer text-slate-500' />
 				</SheetTrigger>
 				<SheetContent side='left'>
 					<ul className='my-5'>
-						<li className='uppercase cursor-pointer'>top</li>
-						<li className='uppercase cursor-pointer'>map</li>
+						<Link href='/'>
+							<li className='uppercase cursor-pointer'>top</li>
+						</Link>
+						<Link href='/map'>
+							<li className='uppercase cursor-pointer'>map</li>
+						</Link>
 						{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
 						<li
 							className='uppercase cursor-pointer'
