@@ -1,12 +1,21 @@
 import Image from 'next/image';
 
-import MapComponent from '@/components/map';
 import { Header } from '@/components/ui/header';
+import { auth } from '../../auth';
+import { redirect } from 'next/navigation';
+import { SignIn } from '@/components/ui/signinButton';
 
-export default function Home() {
+export default async function Home() {
+	const session = await auth();
+	// console.log('session', session);
+	// if (!session?.user) {
+	// 	redirect('/api/auth/signin?callbackUrl=/');
+	// }
+
 	return (
 		<div>
 			<Header />
+			<SignIn />
 			<Image
 				src='/images/top.webp'
 				alt='map'
