@@ -1,31 +1,19 @@
-'use client';
-import { Button } from './button';
 import { MenuBar } from './menu';
-import useSelectedProgramStore from '@/store/useSelectedProgramStore';
-import useRouteStore from '@/store/useRouteStore';
+import { SignIn } from '@/components/ui/signinButton';
+import { SignOut } from './signoutButton';
+import ResetButton from './ResetButton';
+import { auth } from '../../../auth';
 
-export function Header() {
-	const selectedProgramId = useSelectedProgramStore(
-		(state) => state.selectedProgramId,
-	);
-	const setSelectedProgramId = useSelectedProgramStore(
-		(state) => state.setSelectedProgramId,
-	);
-	const { route, setRoute } = useRouteStore();
-
-	function handleClick() {
-		setSelectedProgramId(null);
-		setRoute(null);
-	}
+export async function Header() {
+	const session = await auth();
 
 	return (
 		<div className='bg-gray-100 flex items-center'>
 			<MenuBar />
-			{(route !== null || selectedProgramId !== null) && (
-				<Button className='capitalize' onClick={handleClick}>
-					reset
-				</Button>
-			)}
+			<ResetButton />
+			<div className='ml-auto mr-5'>
+				{session?.user ? <SignOut /> : <SignIn />}
+			</div>
 		</div>
 	);
 }
