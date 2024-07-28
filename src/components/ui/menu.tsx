@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import { Menu } from 'lucide-react';
 
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -8,6 +9,8 @@ import FavoriteContent from '../favoriteComponent';
 
 export function MenuBar() {
 	const [selectedItem, setSelectedItem] = useState<string | null>(null);
+
+	const { data: session } = useSession();
 
 	const handleClick = (item: string) => {
 		setSelectedItem(item);
@@ -27,13 +30,15 @@ export function MenuBar() {
 						<Link href='/map'>
 							<li className='uppercase cursor-pointer'>map</li>
 						</Link>
-						{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
-						<li
-							className='uppercase cursor-pointer'
-							onClick={() => handleClick('Favorite')}
-						>
-							favorite
-						</li>
+						{session ? (
+							/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */
+							<li
+								className='uppercase cursor-pointer'
+								onClick={() => handleClick('Favorite')}
+							>
+								favorite
+							</li>
+						) : null}
 					</ul>
 					<div className='content'>
 						{selectedItem === 'Favorite' && <FavoriteContent />}

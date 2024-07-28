@@ -117,17 +117,19 @@ export default function SheetComponent({
 				</div>
 				<div className='flex items-center mt-5 gap-5'>
 					<Button onClick={onChildClick}>get direction</Button>
-					{isFavorite() ? (
-						<BookmarkMinus
-							className='cursor-pointer bg-pink-400 text-pink-700 rounded-full h-9 w-9 p-1.5 border'
-							onClick={handleRemoveClick}
-						/>
-					) : (
-						<BookmarkPlus
-							className='cursor-pointer border h-9 w-9 p-1.5 rounded-full'
-							onClick={handleAddClick}
-						/>
-					)}
+					{session ? (
+						isFavorite() ? (
+							<BookmarkMinus
+								className='cursor-pointer bg-pink-400 text-pink-700 rounded-full h-9 w-9 p-1.5 border'
+								onClick={handleRemoveClick}
+							/>
+						) : (
+							<BookmarkPlus
+								className='cursor-pointer border h-9 w-9 p-1.5 rounded-full'
+								onClick={handleAddClick}
+							/>
+						)
+					) : null}
 				</div>
 			</SheetContent>
 		</Sheet>
