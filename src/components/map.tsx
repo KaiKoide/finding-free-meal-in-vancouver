@@ -13,9 +13,10 @@ import Map, {
 } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
+import { useSession } from 'next-auth/react';
+
 import { MapPin } from 'lucide-react';
 
-import classes from '@/app/Page.module.css';
 import { fetchFoodProgramsData } from '@/lib/foodPrograms/api';
 import { cn } from '@/lib/utils';
 import useSelectedProgramStore from '@/store/useSelectedProgramStore';
@@ -135,12 +136,12 @@ export default function MapComponent() {
 	console.log('alertMessage', alertMessage);
 
 	return (
-		<main className={classes.mainStyle}>
+		<main className='max-w-full h-screen'>
 			<Map
 				ref={mapRef}
 				mapboxAccessToken={mapboxToken}
 				mapStyle='mapbox://styles/kaikoide/clw70yrjl028m01rj86ct7a7k'
-				style={classes.mapStyle}
+				style={{ width: '100%', height: '100%' }}
 				initialViewState={{
 					latitude: 49.24966,
 					longitude: -123.11934,
@@ -179,38 +180,6 @@ export default function MapComponent() {
 				})}
 				{selectedMarker ? (
 					<>
-						{/* <Popup
-							offset={25}
-							latitude={selectedMarker.foodProgram.latitude}
-							longitude={selectedMarker.foodProgram.longitude}
-							onClose={() => {
-								setSelectedMarker(null);
-								setRoute(null); // Set routes
-							}}
-							closeButton={false}
-						>
-							<h3 className={classes.popupTitle}>
-								{selectedMarker.foodProgram.program_name}
-							</h3>
-							<div className={classes.popupInfo}>
-								<label className={classes.popupLabel}>Description: </label>
-								<span>{selectedMarker.foodProgram.description}</span>
-								<br />
-								<label className={classes.popupLabel}>Address: </label>
-								<span>{selectedMarker.foodProgram.location_address}</span>
-								<br />
-								<p
-									onClick={handleDirectionClick}
-									style={{
-										cursor: 'pointer',
-										color: 'blue',
-										textDecoration: 'underline',
-									}}
-								>
-									Direction
-								</p>
-							</div>
-						</Popup> */}
 						<SheetComponent
 							onChildClick={handleDirectionClick}
 							selectedMarker={selectedMarker}

@@ -66,6 +66,14 @@
     }
   }
 
+  body {
+    font-family: var(--font-roboto)
+  }
+
+  h1, h3{
+  font-family: var(--font-darumadropOne);
+}
+
   @layer base {
     * {
       @apply border-border;
