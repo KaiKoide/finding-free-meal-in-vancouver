@@ -13,9 +13,10 @@ import Map, {
 } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
+import { useSession } from 'next-auth/react';
+
 import { MapPin } from 'lucide-react';
 
-import classes from '@/app/Page.module.css';
 import { fetchFoodProgramsData } from '@/lib/foodPrograms/api';
 import { cn } from '@/lib/utils';
 import useSelectedProgramStore from '@/store/useSelectedProgramStore';

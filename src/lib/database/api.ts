@@ -18,6 +18,7 @@ export async function addFavorite(
 	name: string,
 	lat: number,
 	lon: number,
+	userId: string,
 ) {
 	try {
 		const newRecord = await prisma.favoriteList.create({
@@ -26,6 +27,7 @@ export async function addFavorite(
 				name,
 				lat,
 				lon,
+				userId,
 			},
 		});
 		console.log('Adding new record successfully:', newRecord);

@@ -1,5 +1,6 @@
 'use client';
 import { useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import { BookmarkMinus, BookmarkPlus } from 'lucide-react';
 
 import {
@@ -33,24 +34,28 @@ export default function SheetComponent({
 		(state) => state.removeFavoriteFromStore,
 	);
 
+	const { data: session } = useSession();
+	const userId = session?.user?.id;
+
 	useEffect(() => {
 		fetchFavorites();
 	}, [fetchFavorites]);
 
 	function handleAddClick() {
-		if (selectedMarker) {
+		if (selectedMarker && userId) {
 			addFavorite(
 				selectedMarker.index,
 				selectedMarker.foodProgram.program_name,
 				selectedMarker.foodProgram.latitude,
 				selectedMarker.foodProgram.longitude,
+				userId,
 			);
 			const favorite: FavoriteListData = {
 				id: selectedMarker.index,
 				name: selectedMarker.foodProgram.program_name,
 				lat: selectedMarker.foodProgram.latitude,
 				lon: selectedMarker.foodProgram.longitude,
-				userId: null,
+				userId: userId,
 			};
 			addFavoriteToStore(favorite);
 		}
