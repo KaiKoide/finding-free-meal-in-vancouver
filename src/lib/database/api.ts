@@ -2,10 +2,17 @@
 
 import prisma from '../prisma';
 
+import { auth } from '../../../auth';
+
 export async function fetchFavoriteList() {
 	try {
-		const list = await prisma.favoriteList.findMany();
-		console.log('list', list);
+		const session = await auth();
+
+		const list = await prisma.favoriteList.findMany({
+			where: {
+				userId: session?.user?.id,
+			},
+		});
 
 		return list;
 	} catch (error) {
