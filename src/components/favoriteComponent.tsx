@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
+import { Button } from '@/components/ui/button';
+import { Loading } from '@/components/ui/loading';
 import { removeFavorite } from '@/lib/database/api';
 import { cn } from '@/lib/utils';
 import useFavoriteStore from '@/store/useFavoriteStore';
 import useSelectedProgramStore from '@/store/useSelectedProgramStore';
-import { Button } from './ui/button';
 
 const FavoriteContent = () => {
 	const favoriteList = useFavoriteStore((state) => state.favoriteList);
@@ -14,13 +15,19 @@ const FavoriteContent = () => {
 	const removeFavoriteFromStore = useFavoriteStore(
 		(state) => state.removeFavoriteFromStore,
 	);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const setSelectedProgramId = useSelectedProgramStore(
 		(state) => state.setSelectedProgramId,
 	);
 
 	useEffect(() => {
-		fetchFavorites();
+		async function loadFavorites() {
+			setIsLoading(true);
+			await fetchFavorites();
+			setIsLoading(false);
+		}
+		loadFavorites();
 	}, [fetchFavorites]);
 
 	function handleRemoveClick(favoriteId: number) {
@@ -38,9 +45,13 @@ const FavoriteContent = () => {
 		setSelectedProgramId(favoriteId);
 	}
 
+	if (isLoading) {
+		return <Loading />;
+	}
+
 	return (
 		<div
-			className={cn('h-[90vh] pb-20}', {
+			className={cn('h-[90vh] pb-20', {
 				'overflow-y-scroll': favoriteList.length > 0,
 			})}
 		>
