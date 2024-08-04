@@ -46,7 +46,7 @@ const FavoriteContent = () => {
 	}
 
 	if (isLoading) {
-		return <Loading />;
+		return <Loading isWhite={false} />;
 	}
 
 	return (
