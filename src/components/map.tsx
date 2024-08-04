@@ -12,11 +12,9 @@ import Map, {
 	type MapRef,
 } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-
-import { useSession } from 'next-auth/react';
-
 import { MapPin } from 'lucide-react';
 
+import { Loading } from '@/components/ui/loading';
 import { fetchFoodProgramsData } from '@/lib/foodPrograms/api';
 import { cn } from '@/lib/utils';
 import useSelectedProgramStore from '@/store/useSelectedProgramStore';
@@ -28,6 +26,7 @@ import SheetComponent from './sheetComponent';
 
 export default function MapComponent() {
 	const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
+
 	const [selectedMarker, setSelectedMarker] =
 		useState<SelectedMarkerData | null>(null);
 	const [foodProgramsData, setFoodProgramsData] = useState<FoodProgramsData[]>(
@@ -35,6 +34,7 @@ export default function MapComponent() {
 	);
 	const [showAlert, setShowAlert] = useState(false);
 	const [alertMessage, setAlertMessage] = useState('');
+	const [isLoading, setIsLoading] = useState(false);
 
 	const mapRef = useRef<MapRef | null>(null);
 
@@ -90,6 +90,7 @@ export default function MapComponent() {
 		if (selectedMarker && mapRef.current) {
 			navigator.geolocation.getCurrentPosition(
 				(position) => {
+					setIsLoading(true);
 					const { latitude, longitude } = position.coords;
 					const start = [longitude, latitude];
 					const end = [
@@ -97,7 +98,7 @@ export default function MapComponent() {
 						selectedMarker.foodProgram.latitude,
 					];
 
-					getRoute(start, end);
+					getRoute(start, end).finally(() => setIsLoading(false));
 				},
 				(error) => {
 					console.error(error);
@@ -128,6 +129,7 @@ export default function MapComponent() {
 					// setAlertMessage(message);
 					// console.log(alertMessage);
 					setShowAlert(true);
+					setIsLoading(false);
 				},
 			);
 		}
@@ -136,7 +138,7 @@ export default function MapComponent() {
 	console.log('alertMessage', alertMessage);
 
 	return (
-		<main className='max-w-full h-screen'>
+		<main className='max-w-full h-screen relative'>
 			<Map
 				ref={mapRef}
 				mapboxAccessToken={mapboxToken}
@@ -178,14 +180,12 @@ export default function MapComponent() {
 						</Marker>
 					);
 				})}
-				{selectedMarker ? (
-					<>
-						<SheetComponent
-							onChildClick={handleDirectionClick}
-							selectedMarker={selectedMarker}
-						/>
-					</>
-				) : null}
+				{selectedMarker && (
+					<SheetComponent
+						onChildClick={handleDirectionClick}
+						selectedMarker={selectedMarker}
+					/>
+				)}
 				{/* Route */}
 				{route && (
 					<Source id='route' type='geojson' data={route}>
@@ -205,6 +205,11 @@ export default function MapComponent() {
 					</Source>
 				)}
 			</Map>
+			{isLoading && (
+				<div className='absolute inset-0 flex items-center justify-center z-10 bg-black/50'>
+					<Loading isWhite={true} />
+				</div>
+			)}
 		</main>
 	);
 }
