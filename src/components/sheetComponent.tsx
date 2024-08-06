@@ -44,7 +44,6 @@ export default function SheetComponent({
 	function handleAddClick() {
 		if (selectedMarker && userId) {
 			addFavorite(
-				selectedMarker.index,
 				selectedMarker.foodProgram.program_name,
 				selectedMarker.foodProgram.latitude,
 				selectedMarker.foodProgram.longitude,
