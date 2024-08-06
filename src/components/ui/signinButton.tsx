@@ -12,7 +12,7 @@ export function SignIn() {
 				type='submit'
 				className='bg-cyan-500 hover:bg-cyan-500/90 text-white font-bold py-2 px-4 rounded'
 			>
-				Sign in
+				Sign In
 			</button>
 		</form>
 	);
