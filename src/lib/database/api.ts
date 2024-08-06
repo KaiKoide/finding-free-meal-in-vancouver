@@ -21,7 +21,6 @@ export async function fetchFavoriteList() {
 }
 
 export async function addFavorite(
-	id: number,
 	name: string,
 	lat: number,
 	lon: number,
@@ -30,7 +29,6 @@ export async function addFavorite(
 	try {
 		const newRecord = await prisma.favoriteList.create({
 			data: {
-				id,
 				name,
 				lat,
 				lon,
