@@ -33,7 +33,6 @@ export default function MapComponent() {
 		[],
 	);
 	const [showAlert, setShowAlert] = useState(false);
-	const [alertMessage, setAlertMessage] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
 
 	const mapRef = useRef<MapRef | null>(null);
@@ -102,40 +101,29 @@ export default function MapComponent() {
 				},
 				(error) => {
 					console.error(error);
-					let message = '';
 					switch (error.code) {
+						// ACCESS DENIED
 						case 1:
-							// message = 'Access to location information was denied.';
-							setAlertMessage('Access to location information was denied.');
+							alert('Access to location information was denied.');
 							break;
-						case 2: //POSITION_UNAVAILABLE
-							// alert('現在位置が取得できませんでした');
-							// message = 'The current location could not be obtained.';
-							setAlertMessage('The current location could not be obtained.');
+						// POSITION_UNAVAILABLE
+						case 2:
+							alert('The current location could not be obtained.');
 							break;
-						case 3: //TIMEOUT
-							// alert('タイムアウトになりました');
-							setAlertMessage('The request for location information timed out');
-							// message = 'The request for location information timed out.';
+						//TIMEOUT
+						case 3:
+							alert('The request for location information timed out.');
 							break;
 						default:
-							// message = `An unknown error occurred (Error code: ${error.code}).`;
-							setAlertMessage(
-								`An unknown error occurred (Error code: ${error.code}).`,
-							);
-							// alert(`An unknown error occurred (Error code: ${error.code}).`);
+							alert(`An unknown error occurred (Error code: ${error.code}).`);
 							break;
 					}
-					// setAlertMessage(message);
-					// console.log(alertMessage);
 					setShowAlert(true);
 					setIsLoading(false);
 				},
 			);
 		}
 	};
-
-	console.log('alertMessage', alertMessage);
 
 	return (
 		<main className='max-w-full h-screen relative'>
