@@ -10,8 +10,6 @@ async function seed() {
 			lon: -123.13857731195915,
 		},
 	});
-
-	console.log(favorite);
 }
 
 seed()

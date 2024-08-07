@@ -1,8 +1,16 @@
 import Image from 'next/image';
+import { Darumadrop_One } from 'next/font/google';
+
+const darumadropOne = Darumadrop_One({
+	weight: '400',
+	subsets: ['latin'],
+	variable: '--font-darumadropOne',
+	display: 'swap',
+});
 
 export default function Home() {
 	return (
-		<div>
+		<div className={darumadropOne.className}>
 			<div className='relative'>
 				<Image
 					src='/images/top.webp'
