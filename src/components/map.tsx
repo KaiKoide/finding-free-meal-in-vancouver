@@ -12,6 +12,7 @@ import Map, {
 	type MapRef,
 } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import type { Feature, LineString } from 'geojson';
 import { MapPin } from 'lucide-react';
 
 import { Loading } from '@/components/ui/loading';
@@ -62,7 +63,14 @@ export default function MapComponent() {
 		try {
 			const response = await fetch(directionUrl);
 			const data = await response.json();
-			if (data.routes) setRoute(data.routes[0].geometry);
+			if (data.routes?.[0].geometry) {
+				const routeFeature: Feature<LineString> = {
+					type: 'Feature',
+					properties: {},
+					geometry: data.routes[0].geometry,
+				};
+				setRoute(routeFeature);
+			}
 		} catch (error) {
 			console.error('Error fetching route:', error);
 		}
@@ -124,6 +132,8 @@ export default function MapComponent() {
 			);
 		}
 	};
+
+	console.log('route', route);
 
 	return (
 		<main className='max-w-full h-screen relative'>
