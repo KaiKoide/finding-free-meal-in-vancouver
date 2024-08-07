@@ -4,7 +4,6 @@ import { useState, useRef, useEffect, type MouseEvent } from 'react';
 
 import Map, {
 	Marker,
-	Popup,
 	NavigationControl,
 	GeolocateControl,
 	Source,
@@ -132,8 +131,6 @@ export default function MapComponent() {
 			);
 		}
 	};
-
-	console.log('route', route);
 
 	return (
 		<main className='max-w-full h-screen relative'>
