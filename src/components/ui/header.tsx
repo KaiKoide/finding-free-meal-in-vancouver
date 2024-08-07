@@ -7,8 +7,6 @@ import { auth } from '../../../auth';
 export async function Header() {
 	const session = await auth();
 
-	console.log(session);
-
 	return (
 		<div className='bg-gray-100 flex items-center'>
 			<MenuBar />
