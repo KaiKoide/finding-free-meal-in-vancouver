@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Free Meal Location Search Web Application
 
-## Getting Started
+This application is a web app designed to search for locations offering free and low-cost meals. Built with Next.js, users can save favorite locations, check details, and get routes from their current location to their selected location.
 
-First, run the development server:
+## Key Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Location Search**: Calls location information for free meal spots from an API.
+- **Favorite Functionality**: Users can favorite locations and save them to the database.
+- **Details View**: Clicking on a location shows detailed information about the spot.
+- **Route Display**: Shows the route from the user's current location to a specified location.
+- **OAuth Authentication**: Secure user login using OAuth to protect user information.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Technologies Used
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Next.js
+- API integration
+- OAuth authentication
+- Database (for saving favorite locations)
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Installation
 
-## Learn More
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/KaiKoide/meal-search-app.git
+    ```
+2. Install dependencies:
+    ```bash
+    npm install
+    ```
+3. Set up environment variables (for OAuth and API keys).
 
-To learn more about Next.js, take a look at the following resources:
+    Create a `.env.local` file in the root directory of your project and add the following environment variables:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+    ```bash
+    NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=your_mapbox_access_token
+    AUTH_SECRET=your_auth_secret # Added by `npx auth`. Read more: https://cli.authjs.dev
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+    AUTH_GITHUB_ID=your_github_id
+    AUTH_GITHUB_SECRET=your_github_secret
 
-## Deploy on Vercel
+    AUTH_GOOGLE_ID=your_google_id
+    AUTH_GOOGLE_SECRET=your_google_secret
+    ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+4. Start the development server:
+    ```bash
+    npm run dev
+    ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Usage
+
+1. Users can log in and search for free meal locations near their current location.
+2. Save favorite spots, which will be stored in the database.
+3. Clicking on a location will display its details.
+4. View routes from the user's current location to the selected location.
